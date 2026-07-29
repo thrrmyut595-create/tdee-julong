@@ -16,11 +16,11 @@ from mysql.connector import Error
 # ตั้งค่าการเชื่อมต่อฐานข้อมูล
 # ค่าเริ่มต้น (fallback) คือค่ามาตรฐานของ XAMPP: host=localhost, user=root, password ว่าง
 DB_CONFIG = {
-    "host": os.environ.get("DB_HOST", "localhost"),
-    "user": os.environ.get("DB_USER", "root"),
-    "password": os.environ.get("DB_PASSWORD", ""),
-    "database": os.environ.get("DB_NAME", "calorie_app"),
-    "port": int(os.environ.get("DB_PORT", 3306)),
+    "host": os.environ.get("DB_HOST", "mysql-37f0a13b-web-julong.l.aivencloud.com"),
+    "user": os.environ.get("DB_USER", "avnadmin"),
+    "password": os.environ.get("DB_PASSWORD", "AVNS_AB35MPIfJeHMq5mTSq6"),
+    "database": os.environ.get("DB_NAME", "defaultdb"),
+    "port": int(os.environ.get("DB_PORT", 16208)),
 }
 
 
