@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CalCount — คำนวณแคลอรี่ประจำวัน</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">🌿</span>
+    <span class="brand-name">CalCount</span>
+  </div>
+  <p class="brand-tagline">รู้ทันพลังงานที่กินเข้าไปในแต่ละวัน</p>
+</header>
+
+<main class="layout">
+
+  <!-- แผงสรุปพลังงานวันนี้ -->
+  <section class="card summary-card" id="summaryCard">
+    <div class="ring-wrap">
+      <svg viewBox="0 0 160 160" class="ring">
+        <circle cx="80" cy="80" r="68" class="ring-track"></circle>
+        <circle cx="80" cy="80" r="68" class="ring-progress" id="ringProgress"></circle>
+      </svg>
+      <div class="ring-center">
+        <span class="ring-value" id="totalCaloriesText">0</span>
+        <span class="ring-label">kcal วันนี้</span>
+      </div>
+    </div>
+    <div class="summary-detail">
+      <p class="summary-row">เป้าหมายพลังงาน (TDEE): <strong id="goalText">ยังไม่ได้คำนวณ</strong></p>
+      <p class="summary-row">คงเหลือ: <strong id="remainText">—</strong></p>
+      <input type="date" id="logDateInput" class="date-input">
+    </div>
+  </section>
+
+  <!-- แท็บสลับ -->
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="bmr">คำนวณ TDEE</button>
+    <button class="tab-btn" data-tab="log">บันทึกอาหารวันนี้</button>
+    <button class="tab-btn" data-tab="foods">คลังอาหาร</button>
+  </nav>
+
+  <!-- แท็บ 1: คำนวณ BMR/TDEE -->
+  <section class="card tab-panel active" id="tab-bmr">
+    <h2>คำนวณอัตราการเผาผลาญพลังงาน (BMR/TDEE)</h2>
+    <form id="bmrForm" class="form-grid">
+      <label>เพศ
+        <select name="gender" required>
+          <option value="male">ชาย</option>
+          <option value="female">หญิง</option>
+        </select>
+      </label>
+      <label>น้ำหนัก (กก.)
+        <input type="number" name="weight_kg" step="0.1" min="1" required>
+      </label>
+      <label>ส่วนสูง (ซม.)
+        <input type="number" name="height_cm" step="0.1" min="1" required>
+      </label>
+      <label>อายุ (ปี)
+        <input type="number" name="age" min="1" required>
+      </label>
+      <label class="full-width">ระดับกิจกรรม
+        <select name="activity_level" required>
+          <option value="sedentary">นั่งทำงาน แทบไม่ออกกำลังกาย</option>
+          <option value="light">ออกกำลังกายเบา 1-3 วัน/สัปดาห์</option>
+          <option value="moderate">ออกกำลังกายปานกลาง 3-5 วัน/สัปดาห์</option>
+          <option value="active">ออกกำลังกายหนัก 6-7 วัน/สัปดาห์</option>
+          <option value="very_active">ออกกำลังกายหนักมาก / ใช้แรงงาน</option>
+        </select>
+      </label>
+      <button type="submit" class="btn-primary full-width">คำนวณ</button>
+    </form>
+    <div class="result-box" id="bmrResult" hidden>
+      <p>BMR (พลังงานพื้นฐาน): <strong id="bmrValue"></strong> kcal/วัน</p>
+      <p>TDEE (พลังงานที่ใช้จริงต่อวัน): <strong id="tdeeValue"></strong> kcal/วัน</p>
+    </div>
+  </section>
+
+  <!-- แท็บ 2: บันทึกอาหาร -->
+  <section class="card tab-panel" id="tab-log">
+    <h2>บันทึกอาหารที่กิน</h2>
+    <form id="logForm" class="form-grid">
+      <label class="full-width">เลือกอาหารจากคลัง
+        <select id="foodSelect">
+          <option value="">— เลือกอาหาร (หรือกรอกเองด้านล่าง) —</option>
+        </select>
+      </label>
+      <label>ชื่ออาหาร
+        <input type="text" id="foodNameInput" required>
+      </label>
+      <label>แคลอรี่ต่อ 100 กรัม
+        <input type="number" id="caloriesPer100Input" step="0.1" required>
+      </label>
+      <label>ปริมาณที่กิน (กรัม)
+        <input type="number" id="amountInput" step="1" min="1" value="100" required>
+      </label>
+      <button type="submit" class="btn-primary full-width">เพิ่มลงบันทึก</button>
+    </form>
+
+    <div class="log-list" id="logList"></div>
+  </section>
+
+  <!-- แท็บ 3: คลังอาหาร -->
+  <section class="card tab-panel" id="tab-foods">
+    <h2>เพิ่มอาหารใหม่ลงคลัง</h2>
+    <form id="foodForm" class="form-grid">
+      <label>ชื่ออาหาร
+        <input type="text" name="name" required>
+      </label>
+      <label>แคลอรี่ /100ก.
+        <input type="number" name="calories_per_100g" step="0.1" required>
+      </label>
+      <label>โปรตีน (ก.)
+        <input type="number" name="protein_g" step="0.1" value="0">
+      </label>
+      <label>ไขมัน (ก.)
+        <input type="number" name="fat_g" step="0.1" value="0">
+      </label>
+      <label>คาร์บ (ก.)
+        <input type="number" name="carb_g" step="0.1" value="0">
+      </label>
+      <button type="submit" class="btn-primary full-width">เพิ่มอาหาร</button>
+    </form>
+    <div class="food-table-wrap">
+      <table class="food-table">
+        <thead>
+          <tr><th>ชื่ออาหาร</th><th>kcal/100g</th><th>โปรตีน</th><th>ไขมัน</th><th>คาร์บ</th></tr>
+        </thead>
+        <tbody id="foodTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <p>โปรเจคโรงเรียน · เว็บไซต์คำนวณแคลอรี่ · HTML/CSS/JS + Python Flask + MySQL</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
