@@ -5,7 +5,7 @@
 // ตอนพัฒนาในเครื่อง (เปิดผ่าน http://localhost:5000) ใช้ path แบบ relative ได้เลย
 // ตอน deploy จริง frontend จะอยู่บน Firebase Hosting คนละโดเมนกับ backend (Render)
 // จึงต้องระบุ URL เต็มของ backend ตรงนี้ -> แก้ตรงนี้เป็นลิงก์ Render ของคุณหลัง deploy เสร็จ
-const RENDER_BACKEND_URL = "https://tdee-julong.onrender.com";
+const RENDER_BACKEND_URL = "https://tdee-julong.onrender.com";; // <-- แก้ตรงนี้!
 
 const isLocal = ["localhost", "127.0.0.1"].includes(window.location.hostname);
 const API_BASE = isLocal ? "/api" : `${RENDER_BACKEND_URL}/api`;
